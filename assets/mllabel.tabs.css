@@ -1,0 +1,16 @@
+.mllabel-tabs ul.tabs {
+	margin-left: 4px;
+	top: 3px;
+}
+
+.mllabel-tabs ul.tabs .tab{
+	min-width: 60px;
+	text-align: center;
+}
+
+.mllabel-tabs input.hidden {
+	display: none;
+}
+
+
+
