@@ -5,6 +5,7 @@
 		function _createTabs() {
 			var that = this,
 			tabContainer = $('<ul class="tabs"/>'),
+			fieldContainer = $('<div class="tabfields"/>'),
 			li,  elements = this.element.find(this.settings.elements);
 			this.tabs = $([]);
 			this.tabfields = $([]);
@@ -24,6 +25,8 @@
 				tabContainer.append(li);
 			});
 			tabContainer.insertBefore(elements[0]);
+			fieldContainer.append(elements);
+			this.element.append(fieldContainer);
 		}
 		function _delegateEvents() {
 			this.element.on('click', '.tab', $.proxy(this.toggleTab, this));

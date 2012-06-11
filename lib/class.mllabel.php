@@ -1,12 +1,10 @@
 <?php
 /**
- * MlLabel
- *
  * @package Lib
- * @release 1
- * @copyright 1997-2005 The PHP Group
- * @author Tobias Schlitt <toby@php.net>
- * @license PHP Version 3.0 {@link http://www.php.net/license/3_0.txt}
+ * @author thomas appel <mail@thomas-appel.com>
+
+ * Displays <a href="http://opensource.org/licenses/gpl-3.0.html">GNU Public License</a>
+ * @license http://opensource.org/licenses/gpl-3.0.html GNU Public License
  */
 class MlLabel
 {
@@ -137,6 +135,42 @@ class MlLabel
 		if ($alter_config) {
 			self::writeConf($nlangs);
 		}
+	}
+
+	/**
+	 * getFieldSchema
+	 *
+	 * @param mixed $callback
+	 * @param mixed $context
+	 * @static
+	 * @access public
+	 * @return void
+	 */
+	public static function getFieldSchema(&$callback, &$context)
+	{
+		$section_id = array_key_exists(1, $callback['context']) ? $callback['context'][1] : false;
+		if (!$section_id) {
+			return false;
+		}
+
+		$langs = MlLabel::getAdditionalLanguages();
+		$schema_json = array();
+		$schema = FieldManager::fetchFieldsSchema($section_id);
+
+		foreach ($schema as $fieldArray) {
+			$lang_labels = array();
+			$field = FieldManager::fetch($fieldArray['id']);
+			foreach ($langs as $locale) {
+				$lang_labels['label-' . $locale] = $field->get('label-' . $locale);
+			}
+
+			$schema_json[$field->get('label')] = array(
+				'element_name' => $field->get('element_name'),
+				'id' => $field->get('id'),
+				'labels' => $lang_labels
+			);
+		}
+		return General::sanitize(json_encode($schema_json));
 	}
 
 }

@@ -1,7 +1,12 @@
 <?php
-require_once EXTENSIONS . '/firebug_profiler/lib/FirePHPCore/fb.php';
+/**
+ * @package multilingual_fieldlabel
+ * @author thomas appel <mail@thomas-appel.com>
+
+ * Displays <a href="http://opensource.org/licenses/gpl-3.0.html">GNU Public License</a>
+ * @license http://opensource.org/licenses/gpl-3.0.html GNU Public License
+ */
 require_once EXTENSIONS . '/multilingual_fieldlabel/lib/class.mllabel.php';
-//require_once EXTENSIONS . '/multilingual_fieldlabel/lib/class.field.php';
 
 class extension_multilingual_fieldlabel extends Extension
 {
@@ -79,7 +84,7 @@ class extension_multilingual_fieldlabel extends Extension
     }
 
 	/**
-	 * pupulateMlLabels
+	 * populateMlLabels
 	 *
 	 * @param mixed $context
 	 * @access public
@@ -107,7 +112,7 @@ class extension_multilingual_fieldlabel extends Extension
         $callback = Symphony::Engine()->getPageCallback();
 		if ($callback['driver'] == 'blueprintssections' && (!empty($callback['context']) && ($callback['context'][0] == 'edit' || $callback['context'][0] == 'new'))) {
 			// prepare section:
-			$flabels = $this->_ftest($callback, $context);
+			$flabels = MlLabel::getFieldSchema($callback, $context);
 			$settings = Symphony::Configuration()->get('multilingual_fieldlabel');
 			$settings['additional_lang'] = explode(',', $settings['additional_lang']);
 
@@ -125,30 +130,36 @@ class extension_multilingual_fieldlabel extends Extension
 
 			$context['oPage']->Form->appendChild($values);
 			$context['oPage']->Form->appendChild($labels);
-                Administration::instance()->Page->addStylesheetToHead(URL . '/extensions/multilingual_fieldlabel/assets/mllabel.tabs.css', 'screen', 111, false);
+
+			Administration::instance()->Page->addStylesheetToHead(URL . '/extensions/multilingual_fieldlabel/assets/mllabel.tabs.css', 'screen', 111, false);
 			Administration::instance()->Page->addScriptToHead(URL . '/extensions/multilingual_fieldlabel/assets/mllabel.tabs.js', 112, false);
 			Administration::instance()->Page->addScriptToHead(URL . '/extensions/multilingual_fieldlabel/assets/mllabel.settings.js', 113, false);
+
 		} else if ($callback['driver'] == 'publish' && $callback['context']['page'] != 'index') {
 			// append publish script.
 			$author_lang = Symphony::Engine()->Author->get('language');
 			$sys_lang = Symphony::Configuration()->get('lang', 'symphony');
-			FB::log($callback);
-			FB::log($author_lang);
+
 			if ($author_lang != $sys_lang && !is_null($author_lang)) {
+
 				Administration::instance()->Page->addScriptToHead(URL . '/extensions/multilingual_fieldlabel/assets/mllabel.publish.js', 111, false);
+
 				$labels = array();
 				$section_handle = $callback['context']['section_handle'];
 				$section_id = SectionManager::fetchIDFromHandle($section_handle);
 				$field_schema = FieldManager::fetchFieldsSchema($section_id);
+
 				foreach ($field_schema as $f) {
 					$field = FieldManager::fetch($f['id']);
 					$label = $field->get('label-' . $author_lang);
 					$labels['field-' . $field->get('id')] = $label;
 				}
+
 				$labelValues = Widget::input('mllabel-labels', null, 'hidden', array(
 					'id' => 'mllabel-labels',
 					'data-labels' => General::sanitize(json_encode($labels))
 				));
+
 				$context['oPage']->Form->appendChild($labelValues);
 			}
 		} else if ($callback['driver'] == 'systemextensions' || $context['driver'] == 'systempreferences') {
@@ -156,41 +167,5 @@ class extension_multilingual_fieldlabel extends Extension
 			// or additional language changes.
 			MlLabel::updateFieldsTable();
 		}
-	}
-
-
-	/**
-	 * _ftest
-	 *
-	 * @param mixed $callback
-	 * @param mixed $context
-	 * @access public
-	 * @return void
-	 */
-	public function _ftest(&$callback, &$context)
-	{
-		$section_id = array_key_exists(1, $callback['context']) ? $callback['context'][1] : false;
-		if (!$section_id) {
-			return false;
-		}
-
-		$langs = MlLabel::getAdditionalLanguages();
-		$schema_json = array();
-		$schema = FieldManager::fetchFieldsSchema($section_id);
-
-		foreach ($schema as $fieldArray) {
-			$lang_labels = array();
-			$field = FieldManager::fetch($fieldArray['id']);
-			foreach ($langs as $locale) {
-				$lang_labels['label-' . $locale] = $field->get('label-' . $locale);
-			}
-
-			$schema_json[$field->get('label')] = array(
-				'element_name' => $field->get('element_name'),
-				'id' => $field->get('id'),
-				'labels' => $lang_labels
-			);
-		}
-		return General::sanitize(json_encode($schema_json));
 	}
 }
