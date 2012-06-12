@@ -1,0 +1,2 @@
+Licensed under the GPL v3 public license
+http://opensource.org/licenses/gpl-3.0.html GNU Public License
