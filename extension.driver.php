@@ -9,6 +9,7 @@
  * @license http://opensource.org/licenses/gpl-3.0.html GNU Public License
  */
 require_once EXTENSIONS . '/multilingual_fieldlabel/lib/class.mllabel.php';
+require_once EXTENSIONS . '/firebug_profiler/lib/FirePHPCore/fb.php';
 
 class extension_multilingual_fieldlabel extends Extension
 {
@@ -82,9 +83,20 @@ class extension_multilingual_fieldlabel extends Extension
                 'delegate' => 'AdminPagePreGenerate',
                 'callback' => '__testAddSysLang'
 			),
+            array(
+                'page' => '/blueprints/sections/',
+                'delegate' => 'AddSectionElements',
+                'callback' => '__appendLabels'
+			)
         );
     }
-
+	public function __appendLabels($context)
+	{
+		MlLabel::prepareSettingsContents($context);
+		Administration::instance()->Page->addStylesheetToHead(URL . '/extensions/multilingual_fieldlabel/assets/mllabel.tabs.css', 'screen', 111, false);
+		Administration::instance()->Page->addScriptToHead(URL . '/extensions/multilingual_fieldlabel/assets/mllabel.tabs.js', 112, false);
+		Administration::instance()->Page->addScriptToHead(URL . '/extensions/multilingual_fieldlabel/assets/mllabel.settings.js', 113, false);
+	}
 	/**
 	 * @see lib/MlLabel#postPopulateFields()
 	 */
@@ -102,15 +114,13 @@ class extension_multilingual_fieldlabel extends Extension
 	public function __testAddSysLang($context)
 	{
         $callback = Symphony::Engine()->getPageCallback();
+		/*
 		if ($callback['driver'] == 'blueprintssections' && (!empty($callback['context']) && ($callback['context'][0] == 'edit' || $callback['context'][0] == 'new'))) {
-			// prepare section:
-			MlLabel::prepareSettingsContents($callback, $context);
+			prepare section:
+		}
+		*/
 
-			Administration::instance()->Page->addStylesheetToHead(URL . '/extensions/multilingual_fieldlabel/assets/mllabel.tabs.css', 'screen', 111, false);
-			Administration::instance()->Page->addScriptToHead(URL . '/extensions/multilingual_fieldlabel/assets/mllabel.tabs.js', 112, false);
-			Administration::instance()->Page->addScriptToHead(URL . '/extensions/multilingual_fieldlabel/assets/mllabel.settings.js', 113, false);
-
-		} else if ($callback['driver'] == 'publish' && $callback['context']['page'] != 'index') {
+		if ($callback['driver'] == 'publish' && $callback['context']['page'] != 'index') {
 			if (MlLabel::preparePublishContents($callback, $context)) {
 				// append publish script.
 				Administration::instance()->Page->addScriptToHead(URL . '/extensions/multilingual_fieldlabel/assets/mllabel.publish.js', 111, false);

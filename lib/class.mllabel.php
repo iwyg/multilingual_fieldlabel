@@ -148,9 +148,9 @@ class MlLabel
 	 * @access public
 	 * @return void
 	 */
-	public static function getFieldSchema(&$callback, &$context)
+	public static function getFieldSchema($section_id)
 	{
-		$section_id = array_key_exists(1, $callback['context']) ? $callback['context'][1] : false;
+
 		if (!$section_id) {
 			return false;
 		}
@@ -169,6 +169,27 @@ class MlLabel
 			$schema_json[$field->get('label')] = array(
 				'element_name' => $field->get('element_name'),
 				'id' => $field->get('id'),
+				'labels' => $lang_labels
+			);
+		}
+		return General::sanitize(json_encode($schema_json));
+	}
+
+	public static function getFieldSchemaFromErrors(Array $postFields)
+	{
+		$langs = MlLabel::getAdditionalLanguages();
+		$schema_json = array();
+
+		foreach ($postFields as $field) {
+			$lang_labels = array();
+
+			foreach ($langs as $locale) {
+				$lang_labels['label-' . $locale] = $field['label-' . $locale];
+			}
+
+			$schema_json[$field['label']] = array(
+				'element_name' => $field['element_name'],
+				'id' => $field['id'],
 				'labels' => $lang_labels
 			);
 		}
@@ -234,9 +255,14 @@ class MlLabel
 	 * @access public
 	 * @return void
 	 */
-	public static function prepareSettingsContents(&$callback, &$context)
+	public static function prepareSettingsContents(&$context)
 	{
-		$flabels = self::getFieldSchema($callback, $context);
+		if (is_array($context['errors']) && !empty($context['errors'])) {
+			$flabels = self::getFieldSchemaFromErrors($_POST['fields']);
+		} else {
+			$section_id = SectionManager::fetchIDFromHandle($context['meta']['name']);
+			$flabels = self::getFieldSchema($section_id);
+		}
 		$settings = Symphony::Configuration()->get('multilingual_fieldlabel');
 
 		$settings['additional_lang'] = explode(',', $settings['additional_lang']);
@@ -254,8 +280,8 @@ class MlLabel
 			)
 		);
 
-		$context['oPage']->Form->appendChild($values);
-		$context['oPage']->Form->appendChild($labels);
+		$context['form']->appendChild($values);
+		$context['form']->appendChild($labels);
 	}
 
 }
