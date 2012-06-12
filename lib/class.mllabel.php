@@ -1,4 +1,6 @@
 <?php
+/* vim: et:ts=4:sw=4:sts=4 */
+
 /**
  * @package Lib
  * @author thomas appel <mail@thomas-appel.com>
@@ -171,6 +173,89 @@ class MlLabel
 			);
 		}
 		return General::sanitize(json_encode($schema_json));
+	}
+
+	public static function postPopulateFields(Field $field)
+	{
+		$fields = array();
+		$field_id = $field->get('id');
+
+		foreach (self::getAdditionalLanguages() as $locale) {
+			$fields['label-' . $locale] = General::sanitize($field->get('label-' . $locale));
+		}
+		FieldManager::edit($field_id, $fields);
+	}
+
+
+	/**
+	 * preparePublishContents
+	 *
+	 * @param mixed $callback
+	 * @param mixed $context
+	 * @static
+	 * @access public
+	 * @return {Boolean}
+	 */
+	public static function preparePublishContents(&$callback, &$context)
+	{
+		$author_lang = Symphony::Engine()->Author->get('language');
+		$sys_lang = Symphony::Configuration()->get('lang', 'symphony');
+
+		if ($author_lang != $sys_lang && !is_null($author_lang)) {
+
+			$labels = array();
+			$section_handle = $callback['context']['section_handle'];
+			$section_id = SectionManager::fetchIDFromHandle($section_handle);
+			$field_schema = FieldManager::fetchFieldsSchema($section_id);
+
+			foreach ($field_schema as $f) {
+				$field = FieldManager::fetch($f['id']);
+				$label = $field->get('label-' . $author_lang);
+				$labels['field-' . $field->get('id')] = $label;
+			}
+
+			$labelValues = Widget::input('mllabel-labels', null, 'hidden', array(
+				'id' => 'mllabel-labels',
+				'data-labels' => General::sanitize(json_encode($labels))
+			));
+
+			$context['oPage']->Form->appendChild($labelValues);
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * prepareSettingsContents
+	 *
+	 * @param mixed $callback
+	 * @param mixed $context
+	 * @static
+	 * @access public
+	 * @return void
+	 */
+	public static function prepareSettingsContents(&$callback, &$context)
+	{
+		$flabels = self::getFieldSchema($callback, $context);
+		$settings = Symphony::Configuration()->get('multilingual_fieldlabel');
+
+		$settings['additional_lang'] = explode(',', $settings['additional_lang']);
+
+		$values = Widget::input('mllabel-settings', null, 'hidden', array(
+			'id' => 'mllabel-settings',
+			'readonly' => 'readonly',
+			'data-settings' => General::sanitize(json_encode($settings))
+		));
+
+		$labels = Widget::input('mllabel-labels', null, 'hidden', array(
+			'id' => 'mllabel-labels',
+			'readonly' => 'readonly',
+			'data-values' => $flabels
+			)
+		);
+
+		$context['oPage']->Form->appendChild($values);
+		$context['oPage']->Form->appendChild($labels);
 	}
 
 }

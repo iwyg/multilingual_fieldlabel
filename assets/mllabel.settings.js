@@ -1,9 +1,24 @@
+/* vim: net:ts=4:sw=4:sts=4 */
+
+/**
+ * @package Assets
+ * @author thomas appel <mail@thomas-appel.com>
+
+ * Displays <a href="http://opensource.org/licenses/gpl-3.0.html">GNU Public License</a>
+ * @license http://opensource.org/licenses/gpl-3.0.html GNU Public License
+ */
 (function ($) {
 
+	// get the tablabel value
 	function getTabLabel(el) {
-		console.log(el.data('tab-label'));
 		return el.data('tab-label');
 	}
+
+	// fires when a tab has changed
+	function tabChangeCallback(tabcontent, tab) {
+		tabcontent.focus();
+	}
+	// add the additional fields for available languages
 	function addLableFields(settings, labels) {
 		var instance = $(this),
 		header = instance.find('.content:first'),
@@ -26,8 +41,10 @@
 			label.append(fieldClone);
 		}
 
+		// setup the tabarea
 		label.mllabeltabs({
-			tabLabel: getTabLabel
+			tabLabel: getTabLabel,
+			onTabChange: tabChangeCallback
 		});
 	}
 
