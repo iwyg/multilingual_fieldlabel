@@ -15,9 +15,9 @@
 	 * @module Symphony
 	 * @class Tabs
 	 * @constructor
-	 * @param {Object} el			a jQuery nodeobject
+	 * @param {Object} el			a jQuery element
 	 * @param {Object} [settings]	user defined options to extend default
-	 * behaviour
+	 * settings
 	 */
 	var Tabs = (function () {
 		var TabConstructor;
@@ -120,7 +120,7 @@
 
 		TabConstructor.prototype = {
 			/**
-			 *  Fires after a tablabel has benn cklicked.
+			 *  Fires after a tablabel has been clicked.
 			 *  Changes the current visible tabcontent an fires a callback
 			 *  defined in the useroptions.
 			 *
