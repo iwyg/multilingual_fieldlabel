@@ -9,7 +9,7 @@
  */
 (function ($, undefined) {
 	/**
-	 * Takes an element an transforms it into a tabable area given its
+	 * Takes an element and transforms it into a tabable area given its
 	 * decendent elements are presented as a selectorstring in the useroptions.
 	 *
 	 * @module Symphony
