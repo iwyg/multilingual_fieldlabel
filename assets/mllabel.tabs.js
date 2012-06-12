@@ -10,8 +10,7 @@
 (function ($, undefined) {
 	/**
 	 * Takes an element an transforms it into a tabable area given its
-	 * decendent elements are preseted as a selectorstring in the users
-	 * options.
+	 * decendent elements are presented as a selectorstring in the useroptions.
 	 *
 	 * @module Symphony
 	 * @class Tabs
@@ -113,10 +112,10 @@
 		 * @static
 		 */
 		TabConstructor.defaults = {
-			tabLabel: 'label',
-			elements: 'input[type=text]',
-			selected: 0,
-			onTabChange: null
+			tabLabel: 'label',				// string ot function returning a computed value
+			elements: 'input[type=text]',   // selectorstring for selecting the tabcontent elements
+			selected: 0,					// index: select which tab should be selected on initialize
+			onTabChange: null				// user callback: can fire when a tab has changed
 		};
 
 		TabConstructor.prototype = {
