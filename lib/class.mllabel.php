@@ -12,9 +12,10 @@ class MlLabel
 {
 
 	/**
-	 * writeConf
+     * writeConf
+     * Write the extensions configuration array.
 	 *
-	 * @param mixed $locales
+	 * @param mixed $locales can take an array of locale code strings like en,de,es
 	 * @static
 	 * @access public
 	 * @return void
@@ -28,11 +29,14 @@ class MlLabel
 	}
 
 	/**
-	 * getConfig
+	 * Reads the extends configuration array and returns an array of available
+     * additional languages.
 	 *
 	 * @static
 	 * @access public
-	 * @return void
+	 * @return {Array} an Array of language strings of additional installed and
+     * previously stored in the extensions configuration.
+     * languages
 	 */
 	public static function getConfig()
 	{
@@ -41,10 +45,13 @@ class MlLabel
 	}
 
 	/**
-	 * alterFieldsTable
-	 *
-	 * @param Array $locales
-	 * @param mixed $type
+	 * Utilizes `createQueryString` to create the database query required
+     * for altering symphonys' field table. Augments `tbl_fields` with `handle-<langcode>` rows.
+     *
+	 * @see multilingual_fieldlabel.lib.MlLabel#createQueryString
+	 * @param {Array}  $locales  an array of language code strings
+	 * @param {String} $type     accepts `add` or `drop` weather you will add
+     * or drop rows for the given laguage codes.
 	 * @static
 	 * @access public
 	 * @return void
@@ -56,10 +63,12 @@ class MlLabel
 	}
 
 	/**
-	 * createQueryString
+     * Create the database query string for altering Symphonys' `tbl_fields`
+     * field.
 	 *
-	 * @param Array $locales
-	 * @param mixed $type
+	 * @param {Array}  $locales  an array of language code strings
+	 * @param {String} $type     accepts `add` or `drop` weather you will add
+     * or drop rows for the given laguage codes.
 	 * @static
 	 * @access public
 	 * @return void
@@ -84,11 +93,14 @@ class MlLabel
 
 
 	/**
-	 * getAdditionalLanguages
+     * getAdditionalLanguages
+     *
+     * Returns language codes of all installed system languages except for the
+     * system defualt language.
 	 *
 	 * @static
 	 * @access public
-	 * @return void
+	 * @return {Array} Array of languagecode strings
 	 */
 	public static function getAdditionalLanguages()
 	{
@@ -98,7 +110,8 @@ class MlLabel
 	}
 
 	/**
-	 * updateFieldsTable
+	 * check if exception configuration and/or Symphonys' `tbl_fields` table
+     * requires to be updated.
 	 *
 	 * @static
 	 * @access public
@@ -140,10 +153,10 @@ class MlLabel
 	}
 
 	/**
-	 * getFieldSchema
+     * Returns an escaped JSON string containing all data required for populating dynamically added fieldlabels.
+     * Used on Section creation or edit without error.
 	 *
-	 * @param mixed $callback
-	 * @param mixed $context
+	 * @param {int} $section_id the section id
 	 * @static
 	 * @access public
 	 * @return void
@@ -175,6 +188,19 @@ class MlLabel
 		return General::sanitize(json_encode($schema_json));
 	}
 
+    /**
+     * getFieldSchemaFromErrors
+     * @see multilingual_fieldlabel.lib.MlLabel#getFieldSchema
+     *
+     * Does the same as `getFieldSchema` but is utilized if an error occurs while
+     * saving an section. (this way newly added labels won't get lost while not
+     * saved to the database).
+     *
+     * @param Array $postFields
+     * @static
+     * @access public
+     * @return void
+     */
 	public static function getFieldSchemaFromErrors(Array $postFields)
 	{
 		$langs = MlLabel::getAdditionalLanguages();
@@ -209,10 +235,13 @@ class MlLabel
 
 
 	/**
-	 * preparePublishContents
+     * preparePublishContents
+     *
+     * Gets the current authors language and appends data required for
+     * dynamilcally altering the displayed field lables on a publish page.
 	 *
-	 * @param mixed $callback
-	 * @param mixed $context
+	 * @param {Array} $callback publish page callback array
+     * @param mixed $context see delegates <AdminPagePreGenerate>
 	 * @static
 	 * @access public
 	 * @return {Boolean}
@@ -248,9 +277,10 @@ class MlLabel
 
 	/**
 	 * prepareSettingsContents
+     *
+     * Appends data required for dynamilcally adding the displayed language tabs.
 	 *
-	 * @param mixed $callback
-	 * @param mixed $context
+     * @param mixed $context see delegates <AdminPagePreGenerate>
 	 * @static
 	 * @access public
 	 * @return void

@@ -1,4 +1,6 @@
-/* vim: net:ts=4:sw=4:sts=4 */
+/*
+vim: net:ts=4:sw=4:sts=4
+*/
 
 /**
  * @package Assets

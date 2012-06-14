@@ -1,5 +1,7 @@
 <?php
-/* vim: et:ts=4:sw=4:sts=4 */
+/*
+vim: et:ts=4:sw=4:sts=4
+*/
 
 /**
  * @package multilingual_fieldlabel
@@ -15,10 +17,7 @@ class extension_multilingual_fieldlabel extends Extension
 {
 
 	/**
-	 * __construct
-	 *
-	 * @access public
-	 * @return void
+     * @see toolkit.Extension#__construct
 	 */
 	public function __construct()
 	{
@@ -27,10 +26,7 @@ class extension_multilingual_fieldlabel extends Extension
 	}
 
 	/**
-	 * install
-	 *
-	 * @access public
-	 * @return void
+     * @see toolkit.Extension#install
 	 */
 	public function install()
 	{
@@ -45,10 +41,7 @@ class extension_multilingual_fieldlabel extends Extension
 
 
 	/**
-	 * uninstall
-	 *
-	 * @access public
-	 * @return void
+     * @see toolkit.Extension#uninstall
 	 */
 	public function uninstall()
 	{
@@ -60,10 +53,7 @@ class extension_multilingual_fieldlabel extends Extension
 	}
 
     /**
-     * getSubscribedDelegates
-     *
-     * @access public
-     * @return void
+     * @see toolkit.Extension#getSubscribedDelegates
      */
     public function getSubscribedDelegates()
     {
@@ -90,6 +80,15 @@ class extension_multilingual_fieldlabel extends Extension
 			)
         );
     }
+    /**
+     * __appendLabels
+     *
+     * adds nessesary assetss for a sctions settings page.
+     *
+     * @param mixed $context see delegates <AddSectionElements>
+     * @access public
+     * @return void
+     */
 	public function __appendLabels($context)
 	{
 		MlLabel::prepareSettingsContents($context);
@@ -106,8 +105,11 @@ class extension_multilingual_fieldlabel extends Extension
 	}
 
 	/**
-	 * __testAddSysLang
+     * Dump name I know.
+     * Test weather page is a publish view or a sections settings view.
+     * Appends assets to that pages.
 	 *
+     * @param mixed $context see delegates <AdminPagePreGenerate>
 	 * @access public
 	 * @return void
 	 */
