@@ -292,7 +292,7 @@ class MlLabel
         if (is_array($context['errors']) && !empty($context['errors'])) {
             $flabels = self::getFieldSchemaFromErrors($_POST['fields']);
         } else {
-            $section_id = SectionManager::fetchIDFromHandle($context['meta']['name']);
+            $section_id = SectionManager::fetchIDFromHandle($context['meta']['handle']);
             $flabels = self::getFieldSchema($section_id);
         }
         $settings = Symphony::Configuration()->get('multilingual_fieldlabel');
