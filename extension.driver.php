@@ -122,7 +122,7 @@ class extension_multilingual_fieldlabel extends Extension
         }
         */
 
-        if ($callback['driver'] == 'publish' && $callback['context']['page'] != 'index') {
+        if ($callback['driver'] == 'publish') {
             if (MlLabel::preparePublishContents($callback, $context)) {
                 // append publish script.
                 Administration::instance()->Page->addScriptToHead(URL . '/extensions/multilingual_fieldlabel/assets/mllabel.publish.js', 111, false);
