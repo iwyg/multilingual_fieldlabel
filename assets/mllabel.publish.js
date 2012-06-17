@@ -18,9 +18,22 @@ vim: net:ts=4:sw=4:sts=4
 		if (labels) {
 			for (var key in labels) {
 				if (labels.hasOwnProperty(key)) {
-					cNodes = $('#' + key).find('label:first')[0].childNodes;
-					if (cNodes.length) {
-						cNodes[0].nodeValue = cNodes[0].nodeValue.replace(/[^(\n|\t\r)]+/, labels[key]);
+					var label = $('#' + key).find('label:first');
+
+					if( label.length > 0 ){
+
+						// among the children
+						label.contents().each(function() {
+
+							// find Text nodes
+							if(this.nodeName === "#text"){
+
+								// only non-empty ones
+								if( $.trim(this.textContent) !== '' ){
+									this.textContent = labels[key];
+								}
+							}
+						});
 					}
 				}
 			}
