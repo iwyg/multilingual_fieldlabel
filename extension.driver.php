@@ -115,22 +115,24 @@ class extension_multilingual_fieldlabel extends Extension
      */
     public function __testAddSysLang($context)
     {
-        $callback = Symphony::Engine()->getPageCallback();
-        /*
-        if ($callback['driver'] == 'blueprintssections' && (!empty($callback['context']) && ($callback['context'][0] == 'edit' || $callback['context'][0] == 'new'))) {
-            prepare section:
-        }
-        */
+        if( Symphony::Engine()->isLoggedIn() ){
+    	    $callback = Symphony::Engine()->getPageCallback();
+		    /*
+					if ($callback['driver'] == 'blueprintssections' && (!empty($callback['context']) && ($callback['context'][0] == 'edit' || $callback['context'][0] == 'new'))) {
+						prepare section:
+					}
+					*/
 
-        if ($callback['driver'] == 'publish' && $callback['context']['page'] != 'index') {
-            if (MlLabel::preparePublishContents($callback, $context)) {
-                // append publish script.
-                Administration::instance()->Page->addScriptToHead(URL . '/extensions/multilingual_fieldlabel/assets/mllabel.publish.js', 111, false);
-            }
-        } else if ($callback['driver'] == 'systemextensions' || $context['driver'] == 'systempreferences') {
-            // if page is systempreferences or extensions, test for system language
-            // or additional language changes.
-            MlLabel::updateFieldsTable();
-        }
+		    if ($callback['driver'] == 'publish' && $callback['context']['page'] != 'index') {
+			    if (MlLabel::preparePublishContents($callback, $context)) {
+				    // append publish script.
+				    Administration::instance()->Page->addScriptToHead(URL . '/extensions/multilingual_fieldlabel/assets/mllabel.publish.js', 111, false);
+			    }
+		    } else if ($callback['driver'] == 'systemextensions' || $context['driver'] == 'systempreferences') {
+			    // if page is systempreferences or extensions, test for system language
+			    // or additional language changes.
+			    MlLabel::updateFieldsTable();
+		    }
+	    }
     }
 }
