@@ -3,6 +3,7 @@
 	<name>Multilingual Fieldlabel</name>
 	<description>Additional fieldlabels for each installed systemlanguage.</description>
 	<repo type="github">https://github.com/iwyg/multilingual_fieldlabel</repo>
+	<url type="discuss">http://symphony-cms.com/discuss/thread/89297/</url>
 	<types>
 		<type>Interface</type>
 		<type>Multilingual</type>
