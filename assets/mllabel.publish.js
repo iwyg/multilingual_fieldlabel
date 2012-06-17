@@ -13,13 +13,14 @@ vim: net:ts=4:sw=4:sts=4
 	$(function () {
 		// replace fieldlabel values:
 		var input = $('#mllabel-labels'),
-		labels = input.data('labels'),
+		labels = input.data('labels'), label,
 		cNodes;
 		if (labels) {
 			for (var key in labels) {
 				if (labels.hasOwnProperty(key)) {
-					cNodes = $('#' + key).find('label:first')[0].childNodes;
-					if (cNodes.length) {
+					label = $('#' + key).find('label:first')[0];
+					cNodes = label ? label.childNodes : false;
+					if (cNodes && cNodes.length) {
 						cNodes[0].nodeValue = cNodes[0].nodeValue.replace(/[^(\n|\t\r)]+/, labels[key]);
 					}
 				}
