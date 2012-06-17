@@ -18,22 +18,30 @@ vim: net:ts=4:sw=4:sts=4
 		if (labels) {
 			for (var key in labels) {
 				if (labels.hasOwnProperty(key)) {
-					var label = $('#' + key).find('label:first');
+					var field = $('#' + key);
 
-					if( label.length > 0 ){
+					// support for publish tabs
+					if( field.hasClass('field-publish_tabs') ){
+						field.html(labels[key]);
+					}
+					else{
+						var label = field.find('label:first');
 
-						// among the children
-						label.contents().each(function() {
+						if( label.length > 0 ){
 
-							// find Text nodes
-							if(this.nodeName === "#text"){
+							// among the children
+							label.contents().each(function() {
 
-								// only non-empty ones
-								if( $.trim(this.textContent) !== '' ){
-									this.textContent = labels[key];
+								// find Text nodes
+								if(this.nodeName === "#text"){
+
+									// only non-empty ones
+									if( $.trim(this.textContent) !== '' ){
+										this.textContent = labels[key];
+									}
 								}
-							}
-						});
+							});
+						}
 					}
 				}
 			}
