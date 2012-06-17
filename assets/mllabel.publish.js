@@ -29,6 +29,7 @@ vim: net:ts=4:sw=4:sts=4
 		cNodes,
 		textNode,
 		key,
+		sortable,
 		isIndexPage = Symphony.Context.get().env.page === 'index' ? true: false;
 
 		if (labels) {
@@ -36,7 +37,8 @@ vim: net:ts=4:sw=4:sts=4
 				if (labels.hasOwnProperty(key)) {
 					field = $('#' + key);
 					if (isIndexPage) {
-						cNodes = field.find('a span, a, span').contents();
+						sortable = field.find('a span');
+						cNodes = sortable.length ? sortable.contents() : field.contents();
 						if (cNodes.length) {
 							replaceNodeValue(cNodes.filter(checkNodeContent), labels[key]);
 						}
