@@ -10,18 +10,36 @@ vim: net:ts=4:sw=4:sts=4
  * @license http://opensource.org/licenses/gpl-3.0.html GNU Public License
  */
 (function ($) {
+	function checkNodeContent() {
+		return this.nodeType === 3 && $.trim(this.nodeValue).length;
+	}
+
+	function replaceNodeValue(textNodes, string) {
+		textNodes.each(function () {
+			this.nodeValue = this.nodeValue.replace(/[^(\n|\t\r)]+/, string);
+		});
+	}
+
 	$(function () {
 		// replace fieldlabel values:
 		var input = $('#mllabel-labels'),
-		labels = input.data('labels'), label,
-		cNodes;
+		labels = input.data('labels'),
+		label,
+		field,
+		cNodes,
+		textNode;
+
 		if (labels) {
 			for (var key in labels) {
 				if (labels.hasOwnProperty(key)) {
-					label = $('#' + key).find('label:first')[0];
-					cNodes = label ? label.childNodes : false;
-					if (cNodes && cNodes.length) {
-						cNodes[0].nodeValue = cNodes[0].nodeValue.replace(/[^(\n|\t\r)]+/, labels[key]);
+					field = $('#' + key);
+					if (field.hasClass('field-publish_tabs')) {
+						field.text(labels[key]);
+					} else {
+						cNodes = field.find('label:first').contents();
+						if (cNodes.length) {
+							replaceNodeValue(cNodes.filter(checkNodeContent), labels[key]);
+						}
 					}
 				}
 			}
