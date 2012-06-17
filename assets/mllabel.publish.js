@@ -9,7 +9,7 @@ vim: net:ts=4:sw=4:sts=4
  * Displays <a href="http://opensource.org/licenses/gpl-3.0.html">GNU Public License</a>
  * @license http://opensource.org/licenses/gpl-3.0.html GNU Public License
  */
-(function ($) {
+(function ($, Symphony) {
 	function checkNodeContent() {
 		return this.nodeType === 3 && $.trim(this.nodeValue).length;
 	}
@@ -27,18 +27,27 @@ vim: net:ts=4:sw=4:sts=4
 		label,
 		field,
 		cNodes,
-		textNode;
+		textNode,
+		key,
+		isIndexPage = Symphony.Context.get().env.page === 'index' ? true: false;
 
 		if (labels) {
-			for (var key in labels) {
+			for (key in labels) {
 				if (labels.hasOwnProperty(key)) {
 					field = $('#' + key);
-					if (field.hasClass('field-publish_tabs')) {
-						field.text(labels[key]);
-					} else {
-						cNodes = field.find('label:first').contents();
+					if (isIndexPage) {
+						cNodes = field.find('a span, a, span').contents();
 						if (cNodes.length) {
 							replaceNodeValue(cNodes.filter(checkNodeContent), labels[key]);
+						}
+					} else {
+						if (field.hasClass('field-publish_tabs')) {
+							field.text(labels[key]);
+						} else {
+							cNodes = field.find('label:first').contents();
+							if (cNodes.length) {
+								replaceNodeValue(cNodes.filter(checkNodeContent), labels[key]);
+							}
 						}
 					}
 				}
@@ -46,4 +55,4 @@ vim: net:ts=4:sw=4:sts=4
 			input.remove();
 		}
 	});
-}(this.jQuery));
+} (this.jQuery, this.Symphony));

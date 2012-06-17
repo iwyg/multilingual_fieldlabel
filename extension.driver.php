@@ -124,10 +124,15 @@ class extension_multilingual_fieldlabel extends Extension
         }
         */
 
-        if ($callback['driver'] == 'publish' && $callback['context']['page'] != 'index') {
+        if ($callback['driver'] == 'publish') {
             if (MlLabel::preparePublishContents($callback, $context)) {
                 // append publish script.
                 Administration::instance()->Page->addScriptToHead(URL . '/extensions/multilingual_fieldlabel/assets/mllabel.publish.js', 111, false);
+               // if ($callback['context']['page'] != 'index') {
+               // }
+               // if ($callback['context']['page'] == 'index') {
+               //     Administration::instance()->Page->addScriptToHead(URL . '/extensions/multilingual_fieldlabel/assets/mllabel.publish.js', 111, false);
+               // }
             }
         } else if ($callback['driver'] == 'systemextensions' || $context['driver'] == 'systempreferences') {
             // if page is systempreferences or extensions, test for system language
