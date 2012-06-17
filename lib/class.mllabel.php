@@ -232,7 +232,10 @@ class MlLabel
         foreach (self::getAdditionalLanguages() as $locale) {
             $fields['label-' . $locale] = General::sanitize($field->get('label-' . $locale));
         }
-        FieldManager::edit($field_id, $fields);
+        print_r($fields);
+        if (!empty($fields)) {
+            FieldManager::edit($field_id, $fields);
+        }
     }
 
 
@@ -297,7 +300,9 @@ class MlLabel
         }
         $settings = Symphony::Configuration()->get('multilingual_fieldlabel');
 
-        $settings['additional_lang'] = explode(',', $settings['additional_lang']);
+        $settings['additional_lang'] = (isset($settings['additional_lang']) && strlen($settings['additional_lang']) > 0) ?
+            explode(',', $settings['additional_lang']) :
+            array();
 
         $values = Widget::input('mllabel-settings', null, 'hidden', array(
             'id' => 'mllabel-settings',

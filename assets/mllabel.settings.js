@@ -59,10 +59,13 @@ vim: net:ts=4:sw=4:sts=4
 			addLableFields.call(this, settings, labels);
 		}
 
-		$('form').find('ol > li.instance').each(setup);
+		if (settings.additional_lang.length) {
 
-		$('form > fieldset > .frame').on('constructstop.duplicator', function (e) {
-			setup.call(e.target);
-		});
+			$('form').find('ol > li.instance').each(setup);
+
+			$('form > fieldset > .frame').on('constructstop.duplicator', function (e) {
+				setup.call(e.target);
+			});
+		}
 	});
 }(this.jQuery));
