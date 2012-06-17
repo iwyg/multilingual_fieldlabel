@@ -20,12 +20,22 @@ vim: net:ts=4:sw=4:sts=4
 				if (labels.hasOwnProperty(key)) {
 					var field = $('#' + key);
 
-					// support for publish tabs
+					// publish tabs
 					if( field.hasClass('field-publish_tabs') ){
 						field.html(labels[key]);
 					}
+
 					else{
-						var label = field.find('label:first');
+
+						var label = null;
+
+						// image cropper
+						if( field.hasClass('field-imagecropper') ){
+							label = field.find('p.label');
+						}
+						else{
+							label = field.find('label:first');
+						}
 
 						if( label.length > 0 ){
 
