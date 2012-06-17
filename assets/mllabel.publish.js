@@ -13,48 +13,62 @@ vim: net:ts=4:sw=4:sts=4
 	$(function () {
 		// replace fieldlabel values:
 		var input = $('#mllabel-labels'),
-		labels = input.data('labels'),
-		cNodes;
+		labels = input.data('labels');
+
 		if (labels) {
-			for (var key in labels) {
-				if (labels.hasOwnProperty(key)) {
-					var field = $('#' + key);
 
-					// publish tabs
-					if( field.hasClass('field-publish_tabs') ){
-						field.html(labels[key]);
+			// index
+			if( $('body').hasClass('index') ){
+				for (var key in labels) {
+					if (labels.hasOwnProperty(key) && labels[key] !== '') {
+						$('#' + key).find('> a > span').html(labels[key]);
 					}
+				}
+			}
 
-					else{
+			// single
+			else{
+				for (var key in labels) {
+					if (labels.hasOwnProperty(key) && labels[key] !== '') {
+						var field = $('#' + key);
 
-						var label = null;
-
-						// image cropper
-						if( field.hasClass('field-imagecropper') ){
-							label = field.find('p.label');
+						// publish tabs
+						if( field.hasClass('field-publish_tabs') ){
+							field.html(labels[key]);
 						}
+
 						else{
-							label = field.find('label:first');
-						}
 
-						if( label.length > 0 ){
+							var label = null;
 
-							// among the children
-							label.contents().each(function() {
+							// image cropper
+							if( field.hasClass('field-imagecropper') ){
+								label = field.find('p.label');
+							}
+							else{
+								label = field.find('label:first');
+							}
 
-								// find Text nodes
-								if(this.nodeName === "#text"){
+							if( label.length > 0 ){
 
-									// only non-empty ones
-									if( $.trim(this.textContent) !== '' ){
-										this.textContent = labels[key];
+								// among the children
+								label.contents().each(function() {
+
+									// find Text nodes
+									if(this.nodeName === "#text"){
+
+										// only non-empty ones
+										if( $.trim(this.textContent) !== '' ){
+											this.textContent = labels[key];
+										}
 									}
-								}
-							});
+								});
+							}
 						}
 					}
 				}
 			}
+
 			input.remove();
 		}
 	});
