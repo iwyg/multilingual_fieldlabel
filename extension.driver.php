@@ -45,6 +45,8 @@ class extension_multilingual_fieldlabel extends Extension
      */
     public function uninstall()
     {
+        Symphony::Configuration()->remove('multilingual_fieldlabel');
+
         $addlangs = MlLabel::getAdditionalLanguages();
         if (!empty($addlangs)) {
             return MlLabel::alterFieldsTable($addlangs, 'drop');
