@@ -21,7 +21,14 @@ vim: net:ts=4:sw=4:sts=4
 			if( $('body').hasClass('index') ){
 				for (var key in labels) {
 					if (labels.hasOwnProperty(key) && labels[key] !== '') {
-						$('#' + key).find('> a > span').html(labels[key]);
+						var field = $('#' + key);
+
+						var orderable_field = $('#' + key).find('> a > span');
+
+						if( orderable_field.length > 0 )
+							orderable_field.html(labels[key]);
+						else
+							field.html(labels[key]);
 					}
 				}
 			}
