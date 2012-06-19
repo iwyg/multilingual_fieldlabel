@@ -11,7 +11,6 @@ vim: et:ts=4:sw=4:sts=4
  * @license http://opensource.org/licenses/gpl-3.0.html GNU Public License
  */
 require_once EXTENSIONS . '/multilingual_fieldlabel/lib/class.mllabel.php';
-require_once EXTENSIONS . '/firebug_profiler/lib/FirePHPCore/fb.php';
 
 class extension_multilingual_fieldlabel extends Extension
 {
@@ -106,6 +105,13 @@ class extension_multilingual_fieldlabel extends Extension
         return MlLabel::postPopulateFields($context['field']);
     }
 
+    public function __updateFieldsTable(&$context, $driver = null)
+    {
+       $driver = is_null($driver) ? 'systempreferences' : $driver;
+       MlLabel::updateFieldsTable($driver);
+    }
+
+
     /**
      * Dump name I know.
      * Test weather page is a publish view or a sections settings view.
@@ -118,26 +124,25 @@ class extension_multilingual_fieldlabel extends Extension
     public function __testAddSysLang($context)
     {
         $callback = Symphony::Engine()->getPageCallback();
-        /*
-        if ($callback['driver'] == 'blueprintssections' && (!empty($callback['context']) && ($callback['context'][0] == 'edit' || $callback['context'][0] == 'new'))) {
-            prepare section:
-        }
-        */
+        $driver = $callback['driver'];
+        switch ($driver) {
+            case 'publish':
+                if (MlLabel::preparePublishContents($callback, $context)) {
+                    // append publish script.
+                    Administration::instance()->Page->addScriptToHead(URL . '/extensions/multilingual_fieldlabel/assets/mllabel.publish.js', 111, false);
+                }
+                break;
+            case 'systempreferences':
+                if (is_array($callback['context']) && in_array('success', $callback['context'])) {
+                   MlLabel::updateFieldsTable($driver);
+                }
+                break;
+            case 'systemextensions':
+                   MlLabel::updateFieldsTable($driver);
+                break;
 
-        if ($callback['driver'] == 'publish') {
-            if (MlLabel::preparePublishContents($callback, $context)) {
-                // append publish script.
-                Administration::instance()->Page->addScriptToHead(URL . '/extensions/multilingual_fieldlabel/assets/mllabel.publish.js', 111, false);
-               // if ($callback['context']['page'] != 'index') {
-               // }
-               // if ($callback['context']['page'] == 'index') {
-               //     Administration::instance()->Page->addScriptToHead(URL . '/extensions/multilingual_fieldlabel/assets/mllabel.publish.js', 111, false);
-               // }
-            }
-        } else if ($callback['driver'] == 'systemextensions' || $context['driver'] == 'systempreferences') {
-            // if page is systempreferences or extensions, test for system language
-            // or additional language changes.
-            MlLabel::updateFieldsTable();
+            default:
+                break;
         }
     }
 }

@@ -119,35 +119,44 @@ class MlLabel
      * @access public
      * @return void
      */
-    public static function updateFieldsTable()
+    public static function updateFieldsTable($driver = null)
     {
         $sys_lang = Symphony::Configuration()->get('lang', 'symphony');
         $old_sys_lang = Symphony::Configuration()->get('sys_lang', 'multilingual_fieldlabel');
         $sys_lang_changed = $sys_lang != $old_sys_lang;
         $alter_config = false;
 
-        if ($sys_lang_changed) {
-            try {
-                self::alterFieldsTable(array($sys_lang), 'drop');
-            } catch(Exception $e) {}
-            self::alterFieldsTable(array($old_sys_lang), 'add');
-            $alter_config = true;
+        switch ($driver) {
+            case 'systempreferences':
+                if ($sys_lang_changed) {
+                    try {
+                        self::alterFieldsTable(array($sys_lang), 'drop');
+                    } catch(Exception $e) {}
+                    self::alterFieldsTable(array($old_sys_lang), 'add');
+                    $alter_config = true;
+                }
+                break;
+            case 'systemextensions':
+                $langs = MlLabel::getConfig();
+                $nlangs = self::getAdditionalLanguages();
+                $adds = array_diff($nlangs, $langs);
+                $drops = array_diff($langs, $nlangs);
+
+                if (!empty($adds)) {
+                    $add = MlLabel::alterFieldsTable($adds, 'add');
+                    $alter_config = true;
+                }
+
+                if (!empty($drops)) {
+                    $add = MlLabel::alterFieldsTable($drops, 'drop');
+                    $alter_config = true;
+                }
+                break;
+
+            default:
+                break;
         }
 
-        $langs = MlLabel::getConfig();
-        $nlangs = self::getAdditionalLanguages();
-        $adds = array_diff($nlangs, $langs);
-        $drops = array_diff($langs, $nlangs);
-
-        if (!empty($adds)) {
-            $add = MlLabel::alterFieldsTable($adds, 'add');
-            $alter_config = true;
-        }
-
-        if (!empty($drops)) {
-            $add = MlLabel::alterFieldsTable($drops, 'drop');
-            $alter_config = true;
-        }
 
         if ($alter_config) {
             self::writeConf($nlangs);
