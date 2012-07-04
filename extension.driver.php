@@ -92,10 +92,11 @@ class extension_multilingual_fieldlabel extends Extension
      */
     public function __appendLabels($context)
     {
+        $engine = Symphony::Engine();
         MlLabel::prepareSettingsContents($context);
-        Administration::instance()->Page->addStylesheetToHead(URL . '/extensions/multilingual_fieldlabel/assets/mllabel.tabs.css', 'screen', 111, false);
-        Administration::instance()->Page->addScriptToHead(URL . '/extensions/multilingual_fieldlabel/assets/mllabel.tabs.js', 112, false);
-        Administration::instance()->Page->addScriptToHead(URL . '/extensions/multilingual_fieldlabel/assets/mllabel.settings.js', 113, false);
+        $engine->Page->addStylesheetToHead(URL . '/extensions/multilingual_fieldlabel/assets/mllabel.tabs.css', 'screen', 111, false);
+        $engine->Page->addScriptToHead(URL . '/extensions/multilingual_fieldlabel/assets/mllabel.tabs.js', 112, false);
+        $engine->Page->addScriptToHead(URL . '/extensions/multilingual_fieldlabel/assets/mllabel.settings.js', 113, false);
     }
     /**
      * @see lib/MlLabel#postPopulateFields()
@@ -123,13 +124,19 @@ class extension_multilingual_fieldlabel extends Extension
      */
     public function __testAddSysLang($context)
     {
-        $callback = Symphony::Engine()->getPageCallback();
+        $engine = Symphony::Engine();
+
+        if (!$engine->Author) {
+            return false;
+        }
+
+        $callback = $engine->getPageCallback();
         $driver = $callback['driver'];
         switch ($driver) {
             case 'publish':
                 if (MlLabel::preparePublishContents($callback, $context)) {
                     // append publish script.
-                    Administration::instance()->Page->addScriptToHead(URL . '/extensions/multilingual_fieldlabel/assets/mllabel.publish.js', 111, false);
+                    $engine->Page->addScriptToHead(URL . '/extensions/multilingual_fieldlabel/assets/mllabel.publish.js', 111, false);
                 }
                 break;
             case 'systempreferences':

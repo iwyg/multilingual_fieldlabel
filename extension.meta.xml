@@ -18,7 +18,7 @@
 	<releases>
 		<release version="1.0.2" date="2012-06-19" min="2.3">
 			- various bugfixes
-			- added support for publish tabs and publich index (thanks vlad-ghita for pinting this out)
+			- added support for publish tabs and publich index (thanks vlad-ghita for pointing this out)
 		</release>
 		<release version="1.0.1" date="2012-06-12" min="2.3">
 			- labels now retain their values if an error occurs while saving a section
