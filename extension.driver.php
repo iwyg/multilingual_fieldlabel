@@ -136,7 +136,7 @@ class extension_multilingual_fieldlabel extends Extension
             case 'publish':
                 if (MlLabel::preparePublishContents($callback, $context)) {
                     // append publish script.
-                    $engine->Page->addScriptToHead(URL . '/extensions/multilingual_fieldlabel/assets/mllabel.publish.js', 111, false);
+                    $engine->Page->addScriptToHead(URL . '/extensions/multilingual_fieldlabel/assets/mllabel.publish.js', 999, false);
                 }
                 break;
             case 'systempreferences':
