@@ -15,6 +15,7 @@ vim: net:ts=4:sw=4:sts=4
 	}
 
 	function replaceNodeValue(textNodes, string) {
+		if ( string == '' ) return;
 		textNodes.each(function () {
 			this.nodeValue = this.nodeValue.replace(/[^(\n|\t\r)]+/, string);
 		});
